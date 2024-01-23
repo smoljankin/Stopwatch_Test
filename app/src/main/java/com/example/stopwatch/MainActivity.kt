@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storedItems: ListView
 
     private val storedItemsData: MutableList<String> = mutableListOf()
-
+    private lateinit var adapter: ArrayAdapter<String>
 
     private var isTimerRunning = false
     private var startTime: Long = 0
@@ -51,8 +53,28 @@ class MainActivity : AppCompatActivity() {
         resetButton.isEnabled = false
         storeButton.isEnabled = false
 
+        adapter = object : ArrayAdapter<String>(
+            this,
+            R.layout.text_and_button,
+            R.id.item_text,
+            storedItemsData
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val closeButton: Button = view.findViewById(R.id.close_button)
 
+                // Handle button click
+                closeButton.setOnClickListener {
+                    storedItemsData.removeAt(position)
+                    this.notifyDataSetChanged()
+                }
 
+                return view
+            }
+        }
+
+        storedItems.adapter = adapter
+        
         startButton.setOnClickListener {
             startTimer()
         }
