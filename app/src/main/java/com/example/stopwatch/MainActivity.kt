@@ -88,6 +88,11 @@ class MainActivity : AppCompatActivity() {
     private fun stopTimer() {
         stopButton.isVisible = false
         startButton.isVisible = true
+
+        if (isTimerRunning) {
+            isTimerRunning = false
+            handler.removeCallbacks(updateTask)
+        }
     }
 
     private fun resetTimer() {
@@ -95,6 +100,10 @@ class MainActivity : AppCompatActivity() {
         startButton.isVisible = true
         resetButton.isEnabled = false
         storeButton.isEnabled = false
+
+        elapsedTime = 0
+        isTimerRunning = false
+        updateChronoMeter(elapsedTime)
     }
 
     private fun storeCurrentTime() {
