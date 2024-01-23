@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         storedItems.adapter = adapter
-        
+
         startButton.setOnClickListener {
             startTimer()
         }
@@ -123,13 +123,17 @@ class MainActivity : AppCompatActivity() {
         resetButton.isEnabled = false
         storeButton.isEnabled = false
 
+        storedItemsData.clear()
+        adapter.notifyDataSetChanged()
+
         elapsedTime = 0
         isTimerRunning = false
         updateChronoMeter(elapsedTime)
     }
 
     private fun storeCurrentTime() {
-
+        storedItemsData.add(timerText.text.toString())
+        adapter.notifyDataSetChanged()
     }
     private fun updateChronoMeter(elapsedTime: Long) {
         timerText.text = formatElapsedTime(elapsedTime)
