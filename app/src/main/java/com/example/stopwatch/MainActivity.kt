@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private val storedItemsData: MutableList<String> = mutableListOf()
 
+
     private var isTimerRunning = false
     private var startTime: Long = 0
     private var elapsedTime: Long = 0
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         override fun run() {
             if (isTimerRunning) {
                 elapsedTime = System.currentTimeMillis() - startTime
-
+                updateChronoMeter(elapsedTime)
                 handler.postDelayed(this, 10)
             }
         }
@@ -48,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         stopButton.isVisible = false
         resetButton.isEnabled = false
         storeButton.isEnabled = false
+
+
 
         startButton.setOnClickListener {
             startTimer()
@@ -96,6 +100,17 @@ class MainActivity : AppCompatActivity() {
     private fun storeCurrentTime() {
 
     }
+    private fun updateChronoMeter(elapsedTime: Long) {
+        timerText.text = formatElapsedTime(elapsedTime)
+    }
 
+    private fun formatElapsedTime(elapsedTime: Long): String {
+        val seconds = elapsedTime / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+        val millis = (elapsedTime % 1000) / 10
+
+        return String.format("%02d:%02d:%02d.%02d", hours, minutes % 60, seconds % 60, millis)
+    }
 
 }
