@@ -2,6 +2,8 @@ package com.example.stopwatch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
@@ -17,6 +19,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var storedItems: ListView
 
     private val storedItemsData: MutableList<String> = mutableListOf()
+
+    private var isTimerRunning = false
+    private var startTime: Long = 0
+    private var elapsedTime: Long = 0
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateTask = object : Runnable {
+        override fun run() {
+            if (isTimerRunning) {
+                elapsedTime = System.currentTimeMillis() - startTime
+
+                handler.postDelayed(this, 10)
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,12 +44,41 @@ class MainActivity : AppCompatActivity() {
         resetButton = findViewById(R.id.resetButton)
         storeButton = findViewById(R.id.storeButton)
         storedItems = findViewById(R.id.storedItems)
+
+        stopButton.isVisible = false
+        resetButton.isEnabled = false
+        storeButton.isEnabled = false
+
+        startButton.setOnClickListener {
+            startTimer()
+        }
+
+        stopButton.setOnClickListener {
+            stopTimer()
+        }
+
+        resetButton.setOnClickListener {
+            resetTimer()
+        }
+
+        storeButton.setOnClickListener {
+            storeCurrentTime()
+        }
+
     }
 
     private fun startTimer() {
         resetButton.isEnabled = true
         stopButton.isVisible = true
+        storeButton.isEnabled = true
         startButton.isVisible = false
+
+        if (!isTimerRunning) {
+            startTime = System.currentTimeMillis() - elapsedTime
+            isTimerRunning = true
+            resetButton.isEnabled = true
+            handler.postDelayed(updateTask, 0)
+        }
     }
 
     private fun stopTimer() {
@@ -44,9 +90,12 @@ class MainActivity : AppCompatActivity() {
         stopButton.isVisible = false
         startButton.isVisible = true
         resetButton.isEnabled = false
+        storeButton.isEnabled = false
     }
 
     private fun storeCurrentTime() {
 
     }
+
+
 }
