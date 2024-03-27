@@ -8,6 +8,9 @@
       <entry key="startButton_Click()">
         <State />
       </entry>
+      <entry key="useAppContext()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
